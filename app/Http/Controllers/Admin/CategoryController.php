@@ -22,10 +22,18 @@ class CategoryController extends Controller
             'gender' => 'required|in:mens,womens,kids',
         ]);
 
+        $slug = Str::slug($request->gender . '-' . $request->name);
+
+        // Make slug unique
+        $count = Category::where('slug', $slug)->count();
+        if ($count > 0) {
+            $slug = $slug . '-' . ($count + 1);
+        }
+
         Category::create([
             'name'   => $request->name,
             'gender' => $request->gender,
-            'slug'   => Str::slug($request->gender . '-' . $request->name),
+            'slug'   => $slug,
         ]);
 
         return response()->json(['success' => 'Category created successfully.']);
@@ -43,10 +51,20 @@ class CategoryController extends Controller
             'gender' => 'required|in:mens,womens,kids',
         ]);
 
+        $slug = Str::slug($request->gender . '-' . $request->name);
+
+        // Make slug unique but ignore current category
+        $count = Category::where('slug', $slug)
+                    ->where('id', '!=', $category->id)
+                    ->count();
+        if ($count > 0) {
+            $slug = $slug . '-' . ($count + 1);
+        }
+
         $category->update([
             'name'   => $request->name,
             'gender' => $request->gender,
-            'slug'   => Str::slug($request->gender . '-' . $request->name),
+            'slug'   => $slug,
         ]);
 
         return response()->json(['success' => 'Category updated successfully.']);

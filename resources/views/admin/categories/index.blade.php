@@ -13,7 +13,6 @@
     </div>
     <div class="admin__card__body" style="padding:0;">
 
-        <!-- Success Message -->
         <div class="alert alert-success print-success-msg mx-3 mt-3" style="display:none;"></div>
 
         <table class="table mb-0">
@@ -66,6 +65,7 @@
             </div>
             <div class="modal-body">
                 <form id="createCategoryForm">
+                    @csrf
                     <div class="alert alert-danger print-error-msg" style="display:none;"><ul></ul></div>
                     <div class="mb-3">
                         <label class="form-label">Category Name</label>
@@ -99,6 +99,7 @@
             </div>
             <div class="modal-body">
                 <form id="editCategoryForm">
+                    @csrf
                     <input type="hidden" id="edit_category_id">
                     <div class="alert alert-danger print-error-msg" style="display:none;"><ul></ul></div>
                     <div class="mb-3">
@@ -127,6 +128,13 @@
 
 @push('scripts')
 <script>
+    // Add CSRF token to all AJAX requests
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     // Create Category
     $('#createCategoryForm').submit(function(e) {
         e.preventDefault();
@@ -151,7 +159,8 @@
                         $('#createCategoryForm .print-error-msg ul').append('<li>' + value + '</li>');
                     });
                 } else {
-                    alert('Something went wrong.');
+                    alert('Something went wrong. Error: ' + response.status);
+                    console.error(response);
                 }
             }
         });
@@ -164,6 +173,9 @@
             $('#edit_name').val(data.name);
             $('#edit_gender').val(data.gender);
             $('#editCategoryModal').modal('show');
+        }).fail(function(response) {
+            alert('Failed to load category data.');
+            console.error(response);
         });
     }
 
@@ -172,6 +184,7 @@
         e.preventDefault();
         let id = $('#edit_category_id').val();
         let formData = new FormData(this);
+
         $.ajax({
             type: 'POST',
             url: '/admin/categories/' + id,
@@ -191,7 +204,8 @@
                         $('#editCategoryForm .print-error-msg ul').append('<li>' + value + '</li>');
                     });
                 } else {
-                    alert('Something went wrong.');
+                    alert('Something went wrong. Error: ' + response.status);
+                    console.error(response);
                 }
             }
         });
@@ -208,8 +222,9 @@
                     alert(response.success);
                     $('#category-row-' + id).remove();
                 },
-                error: function() {
+                error: function(response) {
                     alert('Something went wrong.');
+                    console.error(response);
                 }
             });
         }
