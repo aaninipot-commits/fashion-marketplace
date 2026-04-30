@@ -26,6 +26,11 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // User Routes
 Route::middleware('auth')->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    
+    // Product Inquiry
+    Route::post('/inquiry', [App\Http\Controllers\InquiryController::class, 'send'])->name('inquiry.send');
+    Route::get('/my-messages', [App\Http\Controllers\InquiryController::class, 'myMessages'])->name('inquiry.my_messages');
+    Route::get('/my-messages/{productId}/conversation', [App\Http\Controllers\InquiryController::class, 'getConversation'])->name('inquiry.conversation');
 
     // Inquiry
     Route::post('/inquiry', [InquiryController::class, 'send'])->name('inquiry.send');

@@ -49,16 +49,27 @@ class UserController extends Controller
             'email'   => 'required|email|unique:users,email,' . $user->id,
             'phone'   => 'nullable|string|max:191',
             'address' => 'nullable|string|max:191',
+            'password' => 'nullable|min:6',
         ]);
 
-        $user->update([
+        $data = [
             'name'    => $request->name,
             'email'   => $request->email,
             'phone'   => $request->phone,
             'address' => $request->address,
-        ]);
+        ];
 
-        return response()->json(['success' => 'User updated successfully.']);
+        // Only update password if provided
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        $user->update($data);
+
+        return response()->json([
+            'success' => 'User updated successfully.',
+            'user'    => $user
+        ]);
     }
 
     public function destroy(User $user)

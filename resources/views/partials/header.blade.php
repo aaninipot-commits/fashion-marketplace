@@ -95,6 +95,20 @@
                         <li class="{{ request()->routeIs('contact') ? 'active' : '' }}">
                             <a href="{{ route('contact') }}">Contact</a>
                         </li>
+                        <li class="{{ request()->routeIs('inquiry.my_messages') ? 'active' : '' }}">
+                            <a href="{{ route('inquiry.my_messages') }}">
+                                My Messages
+                                @php
+                                    $userUnread = \App\Models\Message::where('user_id', Auth::id())
+                                        ->where('sender', 'admin')
+                                        ->where('is_read', false)
+                                        ->count();
+                                @endphp
+                                @if($userUnread > 0)
+                                    <span style="background:#e74c3c; color:#fff; border-radius:50px; padding:1px 7px; font-size:10px; font-weight:700; margin-left:5px;">{{ $userUnread }}</span>
+                                @endif
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>
