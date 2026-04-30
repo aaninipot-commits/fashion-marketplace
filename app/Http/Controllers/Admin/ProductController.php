@@ -38,7 +38,10 @@ class ProductController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('products'), $filename);
+            $imagePath = 'products/' . $filename;
         }
 
         Product::create([
@@ -88,10 +91,14 @@ class ProductController extends Controller
 
         $imagePath = $product->image;
         if ($request->hasFile('image')) {
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
+            // Delete old image
+            if ($product->image && file_exists(public_path($product->image))) {
+                unlink(public_path($product->image));
             }
-            $imagePath = $request->file('image')->store('products', 'public');
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('products'), $filename);
+            $imagePath = 'products/' . $filename;
         }
 
         $product->update([

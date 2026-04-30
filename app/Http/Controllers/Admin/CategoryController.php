@@ -23,8 +23,6 @@ class CategoryController extends Controller
         ]);
 
         $slug = Str::slug($request->gender . '-' . $request->name);
-
-        // Make slug unique
         $count = Category::where('slug', $slug)->count();
         if ($count > 0) {
             $slug = $slug . '-' . ($count + 1);
@@ -52,8 +50,6 @@ class CategoryController extends Controller
         ]);
 
         $slug = Str::slug($request->gender . '-' . $request->name);
-
-        // Make slug unique but ignore current category
         $count = Category::where('slug', $slug)
                     ->where('id', '!=', $category->id)
                     ->count();
@@ -67,7 +63,10 @@ class CategoryController extends Controller
             'slug'   => $slug,
         ]);
 
-        return response()->json(['success' => 'Category updated successfully.']);
+        return response()->json([
+            'success' => 'Category updated successfully.',
+            'category' => $category
+        ]);
     }
 
     public function destroy(Category $category)

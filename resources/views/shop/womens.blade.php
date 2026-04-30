@@ -62,7 +62,7 @@
                 <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
                     <div class="product__item">
                         <div class="product__item__pic set-bg"
-                            data-setbg="{{ $product->image ? asset('storage/' . $product->image) : asset('img/product/product-2.jpg') }}">
+                            data-setbg="{{ $product->image ? asset($product->image) : asset('img/product/product-2.jpg') }}">
                             @if($product->stock <= 0)
                                 <span class="label" style="background:#e74c3c;">Out of Stock</span>
                             @elseif($product->stock <= 5)

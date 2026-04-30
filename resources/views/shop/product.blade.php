@@ -25,7 +25,7 @@
             <div class="col-lg-6">
                 <div style="background:#f9f9f9; padding:30px; text-align:center;">
                     @if($product->image)
-                        <img src="{{ asset('storage/' . $product->image) }}"
+                        <img src="{{ asset($product->image) }}"
                             alt="{{ $product->name }}"
                             style="max-width:100%; max-height:500px; object-fit:contain;">
                     @else
