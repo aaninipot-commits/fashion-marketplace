@@ -35,7 +35,6 @@
                         </div>
                     @endif
 
-                    <!-- Stock Badge -->
                     @if($product->stock <= 0)
                         <div style="position:absolute; top:20px; left:20px; background:#e74c3c; color:#fff; padding:6px 16px; font-size:12px; font-weight:700; letter-spacing:1px;">
                             OUT OF STOCK
@@ -52,7 +51,6 @@
             <div class="col-lg-6">
                 <div style="padding:20px 0;">
 
-                    <!-- Category & Seller -->
                     <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
                         <span style="background:#f0f0f0; color:#666; padding:4px 12px; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase;">
                             {{ ucfirst($product->category->gender) }} — {{ $product->category->name }}
@@ -62,17 +60,14 @@
                         </span>
                     </div>
 
-                    <!-- Product Name -->
                     <h2 style="font-size:32px; font-weight:800; color:#111; margin-bottom:15px; line-height:1.2;">
                         {{ $product->name }}
                     </h2>
 
-                    <!-- Price -->
                     <div style="font-size:32px; font-weight:800; color:#c8a96e; margin-bottom:20px;">
                         ₱{{ number_format($product->price, 2) }}
                     </div>
 
-                    <!-- Stock Status -->
                     <div style="margin-bottom:20px;">
                         @if($product->stock <= 0)
                             <span style="background:#fdf0f0; color:#e74c3c; padding:6px 16px; font-size:12px; font-weight:700; letter-spacing:1px;">
@@ -89,7 +84,6 @@
                         @endif
                     </div>
 
-                    <!-- Product Details -->
                     <div style="border-top:1px solid #f0f0f0; border-bottom:1px solid #f0f0f0; padding:20px 0; margin-bottom:20px;">
                         @if($product->description)
                             <p style="font-size:14px; color:#666; line-height:1.8; margin-bottom:15px;">
@@ -110,8 +104,7 @@
                         </div>
                     </div>
 
-                    <!-- Seller Info -->
-                    <div style="background:#f9f9f9; padding:20px; margin-bottom:20px; border-left:3px solid #c8a96e;">
+                    <div style="background:#f9f9f9; padding:20px; margin-bottom:25px; border-left:3px solid #c8a96e;">
                         <p style="font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#999; margin-bottom:5px;">Sold by</p>
                         <p style="font-size:16px; font-weight:700; color:#111; margin-bottom:3px;">
                             {{ $product->seller->shop_name ?? $product->seller->name }}
@@ -121,10 +114,9 @@
                         @endif
                     </div>
 
-                    <!-- Inquiry Button -->
                     @if($product->stock > 0)
-                        <button onclick="document.getElementById('inquiry-section').scrollIntoView({behavior:'smooth'})"
-                            style="background:#111; color:#fff; border:none; padding:15px 40px; font-size:12px; font-weight:700; letter-spacing:3px; text-transform:uppercase; cursor:pointer; transition:background 0.3s; width:100%;"
+                        <button onclick="openChat()"
+                            style="background:#111; color:#fff; border:none; padding:16px 40px; font-size:12px; font-weight:700; letter-spacing:3px; text-transform:uppercase; cursor:pointer; transition:background 0.3s; width:100%; display:flex; align-items:center; justify-content:center; gap:10px;"
                             onmouseover="this.style.background='#c8a96e'"
                             onmouseout="this.style.background='#111'">
                             <i class="fa fa-comments"></i> Send Inquiry to Seller
@@ -137,65 +129,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Inquiry Section -->
-        @if($product->stock > 0)
-        <div class="row mt-5" id="inquiry-section">
-            <div class="col-lg-8 offset-lg-2">
-                <div style="background:#fff; padding:40px; box-shadow:0 2px 20px rgba(0,0,0,0.08);">
-
-                    <h4 style="font-size:16px; font-weight:800; letter-spacing:2px; text-transform:uppercase; margin-bottom:5px; color:#111;">
-                        <i class="fa fa-comments" style="color:#c8a96e; margin-right:8px;"></i>
-                        Send Inquiry
-                    </h4>
-                    <p style="font-size:13px; color:#999; margin-bottom:25px;">
-                        Ask the seller about this product. They will reply as soon as possible.
-                    </p>
-
-                    <!-- Success/Error -->
-                    <div class="inquiry-success" style="display:none; background:#f0fdf4; color:#27ae60; padding:12px 16px; margin-bottom:20px; border-left:3px solid #27ae60; font-size:13px; font-weight:600;">
-                        <i class="fa fa-check-circle"></i> <span></span>
-                    </div>
-                    <div class="inquiry-error" style="display:none; background:#fdf0f0; color:#e74c3c; padding:12px 16px; margin-bottom:20px; border-left:3px solid #e74c3c; font-size:13px;">
-                        <i class="fa fa-exclamation-circle"></i> <span></span>
-                    </div>
-
-                    <!-- Inquiry Form -->
-                    <form id="inquiryForm">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        <div class="mb-3">
-                            <label style="font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#111; display:block; margin-bottom:8px;">
-                                Your Message <span style="color:#e74c3c;">*</span>
-                            </label>
-                            <textarea name="message" id="inquiry_message" rows="4"
-                                placeholder="e.g. Is this available in size M? How long is delivery?"
-                                style="width:100%; border:1px solid #e8e8e8; padding:12px 15px; font-size:14px; outline:none; resize:none; font-family:inherit; transition:border 0.3s;"
-                                onfocus="this.style.borderColor='#111';"
-                                onblur="this.style.borderColor='#e8e8e8';"
-                                required></textarea>
-                        </div>
-                        <button type="submit" id="inquirySubmitBtn"
-                            style="background:#111; color:#fff; border:none; padding:14px 40px; font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; cursor:pointer; transition:background 0.3s;"
-                            onmouseover="this.style.background='#c8a96e'"
-                            onmouseout="this.style.background='#111'">
-                            <i class="fa fa-paper-plane"></i> Send Message
-                        </button>
-                    </form>
-
-                    <!-- Previous Conversation -->
-                    <div id="conversation-section" style="margin-top:30px; display:none;">
-                        <div style="border-top:1px solid #f0f0f0; padding-top:25px; margin-bottom:15px;">
-                            <h5 style="font-size:12px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:#999; margin:0;">
-                                Conversation History
-                            </h5>
-                        </div>
-                        <div id="conversation-messages"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
 
         <!-- Related Products -->
         @if($relatedProducts->count() > 0)
@@ -233,59 +166,184 @@
     </div>
 </section>
 
+<!-- ===== CHAT POPUP ===== -->
+<div id="chatOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:99999; justify-content:center; align-items:center;">
+    <div style="background:#fff; width:100%; max-width:520px; height:600px; display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,0.3); border-radius:0;">
+
+        <!-- Chat Header -->
+        <div style="background:#111; padding:18px 20px; display:flex; align-items:center; gap:15px; flex-shrink:0;">
+            <div style="width:42px; height:42px; background:#c8a96e; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <i class="fa fa-store" style="color:#111; font-size:16px;"></i>
+            </div>
+            <div style="flex:1;">
+                <div style="color:#fff; font-size:14px; font-weight:700;">{{ $product->seller->shop_name ?? $product->seller->name }}</div>
+                <div style="color:#c8a96e; font-size:11px; letter-spacing:1px; text-transform:uppercase;">{{ $product->name }}</div>
+            </div>
+            <button onclick="closeChat()"
+                style="background:none; border:none; color:#fff; font-size:22px; cursor:pointer; line-height:1; padding:0; width:30px; height:30px; display:flex; align-items:center; justify-content:center; flex-shrink:0;"
+                onmouseover="this.style.color='#c8a96e';" onmouseout="this.style.color='#fff';">
+                &times;
+            </button>
+        </div>
+
+        <!-- Product Info Bar -->
+        <div style="background:#f9f4ec; padding:10px 20px; display:flex; align-items:center; gap:12px; border-bottom:1px solid #ebebeb; flex-shrink:0;">
+            @if($product->image)
+                <img src="{{ asset($product->image) }}" style="width:36px; height:36px; object-fit:cover; border:1px solid #e8e8e8;" alt="">
+            @endif
+            <div style="flex:1; min-width:0;">
+                <div style="font-size:12px; font-weight:700; color:#111; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $product->name }}</div>
+                <div style="font-size:13px; color:#c8a96e; font-weight:700;">₱{{ number_format($product->price, 2) }}</div>
+            </div>
+        </div>
+
+        <!-- Messages Area -->
+        <div id="chat-messages" style="flex:1; overflow-y:auto; padding:20px; background:#f5f5f5;">
+            <div style="text-align:center; padding:30px; color:#ccc;">
+                <i class="fa fa-spinner fa-spin" style="font-size:20px;"></i>
+                <p style="font-size:12px; margin-top:8px;">Loading conversation...</p>
+            </div>
+        </div>
+
+        <!-- Message Input -->
+        <div style="padding:15px 20px; background:#fff; border-top:1px solid #ebebeb; flex-shrink:0;">
+            <form id="chatForm" style="display:flex; gap:10px; align-items:flex-end;">
+                @csrf
+                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                <textarea name="message" id="chat_input" rows="2"
+                    placeholder="Type your message..."
+                    style="flex:1; border:1px solid #e8e8e8; padding:10px 14px; font-size:13px; outline:none; resize:none; font-family:inherit; border-radius:0; transition:border 0.3s;"
+                    onfocus="this.style.borderColor='#111';"
+                    onblur="this.style.borderColor='#e8e8e8';"
+                    required></textarea>
+                <button type="submit" id="chatSendBtn"
+                    style="background:#111; color:#fff; border:none; padding:10px 18px; font-size:13px; cursor:pointer; transition:background 0.3s; flex-shrink:0; height:60px; width:60px; display:flex; align-items:center; justify-content:center;"
+                    onmouseover="this.style.background='#c8a96e';" onmouseout="this.style.background='#111';">
+                    <i class="fa fa-paper-plane" style="font-size:16px;"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 @push('scripts')
 <script>
-    // Load existing conversation on page load
-    loadConversation();
+    let autoRefreshInterval = null;
+    let chatOpen = false;
 
-    function loadConversation() {
+    // ── OPEN / CLOSE CHAT ───────────────────────────────
+    function openChat() {
+        chatOpen = true;
+        $('#chatOverlay').css('display', 'flex');
+        loadChatMessages();
+        // Auto-refresh every 5 seconds
+        autoRefreshInterval = setInterval(function() {
+            if (chatOpen) loadChatMessages(false);
+        }, 5000);
+    }
+
+    function closeChat() {
+        chatOpen = false;
+        $('#chatOverlay').css('display', 'none');
+        clearInterval(autoRefreshInterval);
+    }
+
+    // Close when clicking outside
+    $('#chatOverlay').click(function(e) {
+        if ($(e.target).is(this)) closeChat();
+    });
+
+    // ── LOAD MESSAGES ───────────────────────────────────
+    function loadChatMessages(showLoading = true) {
+        if (showLoading) {
+            $('#chat-messages').html(`
+                <div style="text-align:center; padding:30px; color:#ccc;">
+                    <i class="fa fa-spinner fa-spin" style="font-size:20px;"></i>
+                    <p style="font-size:12px; margin-top:8px;">Loading...</p>
+                </div>
+            `);
+        }
+
         $.get('{{ route("inquiry.conversation", $product->id) }}', function(data) {
-            if (data.length > 0) {
-                $('#conversation-section').show();
-                let html = '';
-                $.each(data, function(index, msg) {
-                    if (msg.sender === 'user') {
-                        html += `
-                            <div style="margin-bottom:15px; display:flex; justify-content:flex-end;">
-                                <div style="max-width:75%;">
-                                    <div style="font-size:11px; color:#999; letter-spacing:1px; text-transform:uppercase; margin-bottom:5px; text-align:right;">
-                                        You
-                                    </div>
-                                    <div style="background:#111; color:#fff; padding:12px 16px; font-size:13px; line-height:1.6;">
-                                        ${msg.message}
-                                    </div>
-                                    <div style="font-size:11px; color:#ccc; margin-top:4px; text-align:right;">
-                                        ${msg.created_at}
-                                    </div>
-                                </div>
-                            </div>`;
-                    } else {
-                        html += `
-                            <div style="margin-bottom:15px; display:flex; justify-content:flex-start;">
-                                <div style="max-width:75%;">
-                                    <div style="font-size:11px; color:#c8a96e; letter-spacing:1px; text-transform:uppercase; margin-bottom:5px; font-weight:700;">
-                                        <i class="fa fa-store"></i> {{ $product->seller->shop_name ?? $product->seller->name }}
-                                    </div>
-                                    <div style="background:#f9f9f9; border:1px solid #f0f0f0; color:#333; padding:12px 16px; font-size:13px; line-height:1.6;">
-                                        ${msg.message}
-                                    </div>
-                                    <div style="font-size:11px; color:#ccc; margin-top:4px;">
-                                        ${msg.created_at}
-                                    </div>
-                                </div>
-                            </div>`;
-                    }
-                });
-                $('#conversation-messages').html(html);
-            }
+            renderMessages(data);
         });
     }
 
-    // Send Inquiry
-    $('#inquiryForm').submit(function(e) {
+    // ── RENDER MESSAGES ─────────────────────────────────
+    function renderMessages(messages) {
+        if (messages.length === 0) {
+            $('#chat-messages').html(`
+                <div style="text-align:center; padding:40px 20px;">
+                    <i class="fa fa-comments" style="font-size:40px; color:#ddd; display:block; margin-bottom:15px;"></i>
+                    <p style="font-size:13px; color:#999;">No messages yet.</p>
+                    <p style="font-size:12px; color:#ccc;">Send a message to start the conversation!</p>
+                </div>
+            `);
+            return;
+        }
+
+        let html = '';
+        let today = new Date().toDateString();
+
+        messages.forEach(function(msg) {
+            let date = new Date(msg.created_at);
+            let timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            let dateStr = date.toDateString() === today ? 'Today' : date.toLocaleDateString();
+
+            if (msg.sender === 'user') {
+                html += `
+                    <div style="margin-bottom:16px; display:flex; justify-content:flex-end;">
+                        <div style="max-width:75%;">
+                            <div style="background:#111; color:#fff; padding:10px 14px; font-size:13px; line-height:1.6; border-radius:12px 12px 0 12px;">
+                                ${msg.message}
+                            </div>
+                            <div style="font-size:10px; color:#999; margin-top:4px; text-align:right; letter-spacing:0.5px;">
+                                ${dateStr} · ${timeStr}
+                            </div>
+                        </div>
+                    </div>`;
+            } else {
+                html += `
+                    <div style="margin-bottom:16px; display:flex; justify-content:flex-start; gap:8px;">
+                        <div style="width:30px; height:30px; background:#c8a96e; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">
+                            <i class="fa fa-store" style="color:#111; font-size:11px;"></i>
+                        </div>
+                        <div style="max-width:75%;">
+                            <div style="font-size:10px; color:#c8a96e; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px;">
+                                {{ $product->seller->shop_name ?? $product->seller->name }}
+                            </div>
+                            <div style="background:#fff; border:1px solid #e8e8e8; color:#333; padding:10px 14px; font-size:13px; line-height:1.6; border-radius:12px 12px 12px 0; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                                ${msg.message}
+                            </div>
+                            <div style="font-size:10px; color:#999; margin-top:4px; letter-spacing:0.5px;">
+                                ${dateStr} · ${timeStr}
+                            </div>
+                        </div>
+                    </div>`;
+            }
+        });
+
+        let scrollPos = $('#chat-messages').scrollTop();
+        let scrollHeight = $('#chat-messages')[0].scrollHeight;
+        let isAtBottom = scrollPos + $('#chat-messages').height() >= scrollHeight - 50;
+
+        $('#chat-messages').html(html);
+
+        // Auto scroll to bottom if user is near bottom
+        if (isAtBottom || scrollPos === 0) {
+            $('#chat-messages').scrollTop($('#chat-messages')[0].scrollHeight);
+        }
+    }
+
+    // ── SEND MESSAGE ────────────────────────────────────
+    $('#chatForm').submit(function(e) {
         e.preventDefault();
-        let btn = $('#inquirySubmitBtn');
-        btn.html('<i class="fa fa-spinner fa-spin"></i> Sending...').prop('disabled', true);
+        let message = $('#chat_input').val().trim();
+        let btn = $('#chatSendBtn');
+
+        if (!message) return;
+
+        btn.html('<i class="fa fa-spinner fa-spin"></i>').prop('disabled', true);
 
         let formData = new FormData(this);
         $.ajax({
@@ -295,29 +353,24 @@
             contentType: false,
             processData: false,
             success: function(response) {
-                btn.html('<i class="fa fa-paper-plane"></i> Send Message').prop('disabled', false);
-                $('.inquiry-success span').text(response.success);
-                $('.inquiry-success').show();
-                $('.inquiry-error').hide();
-                $('#inquiry_message').val('');
-
-                // Reload conversation
-                setTimeout(function() {
-                    loadConversation();
-                    $('.inquiry-success').fadeOut();
-                }, 2000);
+                btn.html('<i class="fa fa-paper-plane" style="font-size:16px;"></i>').prop('disabled', false);
+                $('#chat_input').val('');
+                // Reload messages immediately after sending
+                loadChatMessages(false);
             },
             error: function(response) {
-                btn.html('<i class="fa fa-paper-plane"></i> Send Message').prop('disabled', false);
-                if (response.status === 422) {
-                    $('.inquiry-error span').text('Please enter a message.');
-                } else {
-                    $('.inquiry-error span').text('Something went wrong. Please try again.');
-                }
-                $('.inquiry-error').show();
-                $('.inquiry-success').hide();
+                btn.html('<i class="fa fa-paper-plane" style="font-size:16px;"></i>').prop('disabled', false);
+                alert('Failed to send message. Please try again.');
             }
         });
+    });
+
+    // Send on Enter (Shift+Enter for new line)
+    $('#chat_input').keydown(function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            $('#chatForm').submit();
+        }
     });
 </script>
 @endpush

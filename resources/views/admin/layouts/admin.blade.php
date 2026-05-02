@@ -313,7 +313,7 @@
                 <i class="fa fa-users"></i> Users
             </a>
             <a href="{{ route('admin.messages.index') }}" class="{{ request()->routeIs('admin.messages.*') ? 'active' : '' }}">
-                <i class="fa fa-comments"></i> Messages
+                <i class="fa fa-comments"></i> Product Inquiries
                 @php $unread = \App\Models\Message::where('is_read', false)->where('sender', 'user')->count(); @endphp
                 @if($unread > 0)
                     <span style="background:#e74c3c; color:#fff; border-radius:50%; width:18px; height:18px; font-size:10px; display:flex; align-items:center; justify-content:center; margin-left:auto;">{{ $unread }}</span>
@@ -322,7 +322,7 @@
 
             {{-- ← Contact Messages added here --}}
             <a href="{{ route('admin.contact_messages.index') }}" class="{{ request()->routeIs('admin.contact_messages.*') ? 'active' : '' }}">
-                <i class="fa fa-envelope"></i> Contact Messages
+                <i class="fa fa-headphones"></i> Customer Support
                 @php $unreadContact = \App\Models\ContactMessage::where('is_read', false)->count(); @endphp
                 @if($unreadContact > 0)
                     <span style="background:#e74c3c; color:#fff; border-radius:50%; width:18px; height:18px; font-size:10px; display:flex; align-items:center; justify-content:center; margin-left:auto;">{{ $unreadContact }}</span>

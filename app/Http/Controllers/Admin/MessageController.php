@@ -12,30 +12,43 @@ class MessageController extends Controller
 {
     public function index()
     {
-        // Only show messages for seller's own products
         $sellerProductIds = Product::where('seller_id', Auth::id())->pluck('id');
 
-        $messages = Message::with(['user', 'product'])
+        // Get unique conversations (one per user per product)
+        $conversations = Message::with(['user', 'product'])
             ->whereIn('product_id', $sellerProductIds)
             ->where('sender', 'user')
-            ->latest()
-            ->get();
+            ->select('user_id', 'product_id')
+            ->distinct()
+            ->get()
+            ->map(function($msg) {
+                $lastMessage = Message::where('user_id', $msg->user_id)
+                    ->where('product_id', $msg->product_id)
+                    ->latest()
+                    ->first();
+                $unreadCount = Message::where('user_id', $msg->user_id)
+                    ->where('product_id', $msg->product_id)
+                    ->where('sender', 'user')
+                    ->where('is_read', false)
+                    ->count();
+                return [
+                    'user'        => $msg->user,
+                    'product'     => $msg->product,
+                    'lastMessage' => $lastMessage,
+                    'unreadCount' => $unreadCount,
+                ];
+            });
 
-        return view('admin.messages.index', compact('messages'));
+        return view('admin.messages.index', compact('conversations'));
     }
 
     public function show(Message $message)
     {
-        // Verify this message belongs to seller's product
-        $product = Product::where('id', $message->product_id)
-                    ->where('seller_id', Auth::id())
-                    ->first();
-
-        if (!$product) {
-            return response()->json(['error' => 'Unauthorized.'], 403);
-        }
-
-        $message->update(['is_read' => true]);
+        // Mark user messages as read
+        Message::where('user_id', $message->user_id)
+            ->where('product_id', $message->product_id)
+            ->where('sender', 'user')
+            ->update(['is_read' => true]);
 
         $conversation = Message::where('user_id', $message->user_id)
             ->where('product_id', $message->product_id)
@@ -65,7 +78,11 @@ class MessageController extends Controller
 
     public function destroy(Message $message)
     {
-        $message->delete();
-        return response()->json(['success' => 'Message deleted successfully.']);
+        // Delete entire conversation
+        Message::where('user_id', $message->user_id)
+            ->where('product_id', $message->product_id)
+            ->delete();
+
+        return response()->json(['success' => 'Conversation deleted successfully.']);
     }
 }
