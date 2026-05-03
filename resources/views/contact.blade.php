@@ -41,7 +41,11 @@
             </div>
             <div class="col-lg-8 col-md-8">
                 <div class="contact__form">
-                    <h2 style="font-size:28px; font-weight:800; margin-bottom:30px; text-transform:uppercase;">Get In Touch</h2>
+                    <h2 style="font-size:28px; font-weight:800; margin-bottom:10px; text-transform:uppercase;">Get In Touch</h2>
+<p style="font-size:13px; color:#999; margin-bottom:25px;">
+    <i class="fa fa-info-circle"></i>
+    For product-specific questions, please visit the product page and use the <strong>Send Inquiry</strong> button to message the seller directly.
+</p>
 
                     @if(session('success'))
                         <div class="alert alert-success" style="border-radius:0; margin-bottom:20px; background:#f0fdf4; color:#27ae60; border:none; padding:12px 16px;">

@@ -1,12 +1,12 @@
 @extends('admin.layouts.admin')
 
-@section('page_title', 'Contact Messages')
+@section('page_title', 'Customer Support')
 
 @section('content')
 
 <div class="admin__card">
     <div class="admin__card__header">
-        <h5>Contact Messages</h5>
+        <h5>Customer Support Messages</h5>
     </div>
     <div class="admin__card__body" style="padding:0;">
         <table class="table mb-0">

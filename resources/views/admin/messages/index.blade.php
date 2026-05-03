@@ -1,6 +1,6 @@
 @extends('admin.layouts.admin')
 
-@section('page_title', 'Messages')
+@section('page_title', 'Product Inquiries')
 
 @section('content')
 

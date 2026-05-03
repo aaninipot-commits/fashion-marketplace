@@ -233,7 +233,7 @@
                     <i class="fa fa-tags"></i> Categories
                 </a>
                 <a href="{{ route('admin.messages.index') }}">
-                    <i class="fa fa-comments"></i> Messages
+                    <i class="fa fa-comments"></i> Product Inquiries
                     @php $unread = \App\Models\Message::whereIn('product_id', \App\Models\Product::where('seller_id', Auth::id())->pluck('id'))->where('is_read', false)->where('sender', 'user')->count(); @endphp
                     @if($unread > 0)
                         <span style="background:#e74c3c; color:#fff; border-radius:50%; width:16px; height:16px; font-size:9px; display:flex; align-items:center; justify-content:center; margin-left:auto;">{{ $unread }}</span>
@@ -243,7 +243,7 @@
                     <i class="fa fa-users"></i> Users
                 </a>
                 <a href="{{ route('admin.contact_messages.index') }}">
-                    <i class="fa fa-envelope"></i> Contact Messages
+                    <i class="fa fa-headphones"></i> Customer Support
                 </a>
 
                 <div class="admin__sidebar__title">Browsing</div>
