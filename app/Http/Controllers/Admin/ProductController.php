@@ -7,13 +7,11 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        // Only show seller's own products
         $products   = Product::with('category')
                         ->where('seller_id', Auth::id())
                         ->latest()
@@ -38,14 +36,14 @@ class ProductController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $file      = $request->file('image');
+            $filename  = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
             $file->move(public_path('products'), $filename);
             $imagePath = 'products/' . $filename;
         }
 
         Product::create([
-            'seller_id'   => Auth::id(), // ← Link to current seller
+            'seller_id'   => Auth::id(),
             'category_id' => $request->category_id,
             'name'        => $request->name,
             'description' => $request->description,
@@ -62,7 +60,6 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        // Make sure seller can only view their own product
         if ($product->seller_id !== Auth::id()) {
             return response()->json(['error' => 'Unauthorized.'], 403);
         }
@@ -72,7 +69,6 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        // Make sure seller can only update their own product
         if ($product->seller_id !== Auth::id()) {
             return response()->json(['error' => 'Unauthorized.'], 403);
         }
@@ -95,8 +91,8 @@ class ProductController extends Controller
             if ($product->image && file_exists(public_path($product->image))) {
                 unlink(public_path($product->image));
             }
-            $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $file      = $request->file('image');
+            $filename  = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
             $file->move(public_path('products'), $filename);
             $imagePath = 'products/' . $filename;
         }
@@ -118,14 +114,14 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        // Make sure seller can only delete their own product
         if ($product->seller_id !== Auth::id()) {
             return response()->json(['error' => 'Unauthorized.'], 403);
         }
 
-        if ($product->image) {
-            Storage::disk('public')->delete($product->image);
+        if ($product->image && file_exists(public_path($product->image))) {
+            unlink(public_path($product->image));
         }
+
         $product->delete();
         return response()->json(['success' => 'Product deleted successfully.']);
     }

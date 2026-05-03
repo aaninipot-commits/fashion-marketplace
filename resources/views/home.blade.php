@@ -50,46 +50,61 @@
     <!-- Hero Section End -->
 
     <!-- Banner Section Begin -->
-    <section class="banner spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-7 offset-lg-4">
-                    <div class="banner__item">
-                        <div class="banner__item__pic">
-                            <img src="{{ asset('img/banner/banner-1.jpg') }}" alt="">
-                        </div>
-                        <div class="banner__item__text">
-                            <h2>Men's Collections 2026</h2>
-                            <a href="{{ route('shop.mens') }}">Shop now</a>
-                        </div>
+<section class="banner spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div style="position:relative; overflow:hidden; height:400px; background:#f5f5f5;">
+                    <img src="{{ asset('img/banner/banner-1.jpg') }}" alt="Men's Collection"
+                        style="width:100%; height:100%; object-fit:cover; transition:transform 0.5s;"
+                        onmouseover="this.style.transform='scale(1.05)';"
+                        onmouseout="this.style.transform='scale(1)';">
+                    <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent, rgba(0,0,0,0.7)); padding:30px 25px;">
+                        <h2 style="color:#fff; font-size:20px; font-weight:800; margin-bottom:10px; letter-spacing:1px;">Men's Collections 2026</h2>
+                        <a href="{{ route('shop.mens') }}"
+                            style="color:#c8a96e; font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition:gap 0.3s;"
+                            onmouseover="this.style.gap='12px';" onmouseout="this.style.gap='8px';">
+                            Shop Now <i class="fa fa-arrow-right"></i>
+                        </a>
                     </div>
                 </div>
-                <div class="col-lg-5">
-                    <div class="banner__item banner__item--middle">
-                        <div class="banner__item__pic">
-                            <img src="{{ asset('img/banner/banner-2.jpg') }}" alt="">
-                        </div>
-                        <div class="banner__item__text">
-                            <h2>Women's Collection</h2>
-                            <a href="{{ route('shop.womens') }}">Shop now</a>
-                        </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div style="position:relative; overflow:hidden; height:400px; background:#f5f5f5;">
+                    <img src="{{ asset('img/banner/banner-2.jpg') }}" alt="Women's Collection"
+                        style="width:100%; height:100%; object-fit:cover; transition:transform 0.5s;"
+                        onmouseover="this.style.transform='scale(1.05)';"
+                        onmouseout="this.style.transform='scale(1)';">
+                    <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent, rgba(0,0,0,0.7)); padding:30px 25px;">
+                        <h2 style="color:#fff; font-size:20px; font-weight:800; margin-bottom:10px; letter-spacing:1px;">Women's Collection</h2>
+                        <a href="{{ route('shop.womens') }}"
+                            style="color:#c8a96e; font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition:gap 0.3s;"
+                            onmouseover="this.style.gap='12px';" onmouseout="this.style.gap='8px';">
+                            Shop Now <i class="fa fa-arrow-right"></i>
+                        </a>
                     </div>
                 </div>
-                <div class="col-lg-7">
-                    <div class="banner__item banner__item--last">
-                        <div class="banner__item__pic">
-                            <img src="{{ asset('img/banner/banner-3.jpg') }}" alt="">
-                        </div>
-                        <div class="banner__item__text">
-                            <h2>Kids' Collection 2026</h2>
-                            <a href="{{ route('shop.kids') }}">Shop now</a>
-                        </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div style="position:relative; overflow:hidden; height:400px; background:#f5f5f5;">
+                    <img src="{{ asset('img/banner/banner-3.jpg') }}" alt="Kids' Collection"
+                        style="width:100%; height:100%; object-fit:cover; transition:transform 0.5s;"
+                        onmouseover="this.style.transform='scale(1.05)';"
+                        onmouseout="this.style.transform='scale(1)';">
+                    <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent, rgba(0,0,0,0.7)); padding:30px 25px;">
+                        <h2 style="color:#fff; font-size:20px; font-weight:800; margin-bottom:10px; letter-spacing:1px;">Kids' Collection 2026</h2>
+                        <a href="{{ route('shop.kids') }}"
+                            style="color:#c8a96e; font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition:gap 0.3s;"
+                            onmouseover="this.style.gap='12px';" onmouseout="this.style.gap='8px';">
+                            Shop Now <i class="fa fa-arrow-right"></i>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <!-- Banner Section End -->
+    </div>
+</section>
+<!-- Banner Section End -->
 
     <!-- Product Section Begin -->
     <section class="product spad">
