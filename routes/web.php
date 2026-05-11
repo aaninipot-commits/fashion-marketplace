@@ -26,7 +26,11 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // User Routes
 Route::middleware('auth')->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    
+
+    // User Profile
+    Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+
     // Product Inquiry
     Route::post('/inquiry', [App\Http\Controllers\InquiryController::class, 'send'])->name('inquiry.send');
     Route::get('/my-messages', [App\Http\Controllers\InquiryController::class, 'myMessages'])->name('inquiry.my_messages');

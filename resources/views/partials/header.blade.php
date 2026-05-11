@@ -109,6 +109,9 @@
                                 @endif
                             </a>
                         </li>
+                        <li class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">
+                            <a href="{{ route('profile.index') }}">My Profile</a>
+                        </li>
                     </ul>
                 </nav>
             </div>

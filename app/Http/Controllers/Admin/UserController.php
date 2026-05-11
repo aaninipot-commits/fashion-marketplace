@@ -4,14 +4,30 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Product;
+use App\Models\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function index()
     {
-        $users = User::where('role', 'user')->latest()->get();
+        // Get only users who have sent inquiries to this seller's products
+        $sellerProductIds = Product::where('seller_id', Auth::id())->pluck('id');
+
+        $users = User::where('role', 'user')
+            ->whereHas('messages', function($query) use ($sellerProductIds) {
+                $query->whereIn('product_id', $sellerProductIds);
+            })
+            ->withCount(['messages as inquiry_count' => function($query) use ($sellerProductIds) {
+                $query->whereIn('product_id', $sellerProductIds)
+                      ->where('sender', 'user');
+            }])
+            ->latest()
+            ->get();
+
         return view('admin.users.index', compact('users'));
     }
 
@@ -59,7 +75,6 @@ class UserController extends Controller
             'address' => $request->address,
         ];
 
-        // Only update password if provided
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
