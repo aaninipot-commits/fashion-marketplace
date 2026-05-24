@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ContactMessage;
+use Illuminate\Http\Request;
 
 class ContactMessageController extends Controller
 {
@@ -13,10 +14,10 @@ class ContactMessageController extends Controller
         return view('admin.contact_messages.index', compact('messages'));
     }
 
-    public function show(ContactMessage $contactMessage)
+    public function markRead(ContactMessage $contactMessage)
     {
         $contactMessage->update(['is_read' => true]);
-        return response()->json($contactMessage);
+        return response()->json(['success' => true]);
     }
 
     public function destroy(ContactMessage $contactMessage)

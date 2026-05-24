@@ -118,6 +118,12 @@
         }
     </style>
 
+@if(session('warning'))
+<div style="background:#fff8f0; color:#f39c12; padding:12px 20px; text-align:center; font-size:13px; font-weight:600; border-bottom:1px solid #ffe0b2;">
+    <i class="fa fa-exclamation-triangle"></i> {{ session('warning') }}
+</div>
+@endif
+
     @stack('styles')
 
     @auth

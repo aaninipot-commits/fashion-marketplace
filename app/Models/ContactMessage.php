@@ -3,18 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ContactMessage extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'user_id',
         'name',
         'email',
         'subject',
+        'type',
         'message',
+        'reply',
         'is_read',
     ];
 

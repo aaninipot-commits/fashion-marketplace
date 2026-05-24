@@ -68,10 +68,11 @@ class ProfileController extends Controller
 
         $user->update([
             'role'             => 'admin',
+            'is_approved'      => 'pending',
             'shop_name'        => $request->shop_name,
             'shop_description' => $request->shop_description,
         ]);
 
-        return back()->with('success', 'Congratulations! You are now a Seller! 🎉');
+        return back()->with('success', 'Your seller application has been submitted! Please wait for Super Admin approval before you can start selling.');
     }
 }

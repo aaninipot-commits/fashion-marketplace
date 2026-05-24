@@ -19,22 +19,32 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required|min:6',
-        ]);
+{
+    $request->validate([
+        'email'    => 'required|email',
+        'password' => 'required|min:6',
+    ]);
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            $user = Auth::user();
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            }
-            return redirect()->route('home');
+    if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        $user = Auth::user();
+
+        // Check if banned
+        if ($user->is_banned) {
+            Auth::logout();
+            return back()->withErrors(['email' => 'Your account has been banned. Please contact support.'])->withInput();
         }
 
-        return back()->withErrors(['email' => 'Invalid email or password.'])->withInput();
+        if ($user->role === 'superadmin') {
+            return redirect()->route('superadmin.dashboard');
+        }
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('home');
     }
+
+    return back()->withErrors(['email' => 'Invalid email or password.'])->withInput();
+}
 
     public function showRegister()
     {
@@ -143,39 +153,44 @@ class AuthController extends Controller
     }
 
     public function saveGoogleRole(Request $request)
-    {
-        $request->validate([
-            'role'             => 'required|in:user,admin',
-            'shop_name'        => 'required_if:role,admin|nullable|string|max:191',
-            'shop_description' => 'nullable|string|max:191',
-        ]);
+{
+    $request->validate([
+        'role'             => 'required|in:user,admin',
+        'shop_name'        => 'required_if:role,admin|nullable|string|max:191',
+        'shop_description' => 'nullable|string|max:191',
+    ]);
 
-        // Check if session data exists
-        if (!session('google_email')) {
-            return redirect()->route('login');
-        }
-
-        $user = User::create([
-            'name'              => session('google_name'),
-            'email'             => session('google_email'),
-            'password'          => Hash::make(Str::random(24)),
-            'role'              => $request->role,
-            'shop_name'         => $request->shop_name,
-            'shop_description'  => $request->shop_description,
-            'google_id'         => session('google_id'),
-            'profile_photo_url' => session('google_avatar'),
-        ]);
-
-        // Clear Google session data
-        session()->forget(['google_name', 'google_email', 'google_id', 'google_avatar']);
-
-        Auth::login($user);
-
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        }
-        return redirect()->route('home');
+    if (!session('google_email')) {
+        return redirect()->route('login');
     }
+
+    $isAdmin    = $request->role === 'admin';
+    $isApproved = $isAdmin ? 'pending' : 'approved';
+
+    $user = User::create([
+        'name'              => session('google_name'),
+        'email'             => session('google_email'),
+        'password'          => Hash::make(Str::random(24)),
+        'role'              => $request->role,
+        'is_approved'       => $isApproved,
+        'shop_name'         => $request->shop_name,
+        'shop_description'  => $request->shop_description,
+        'google_id'         => session('google_id'),
+        'profile_photo_url' => session('google_avatar'),
+    ]);
+
+    session()->forget(['google_name', 'google_email', 'google_id', 'google_avatar']);
+
+    Auth::login($user);
+
+    if ($isAdmin) {
+        // Pending approval - redirect to home with message
+        return redirect()->route('home')
+            ->with('warning', 'Your seller account is pending approval from the Super Admin. You can browse the shop but cannot sell yet.');
+    }
+
+    return redirect()->route('home');
+}
 
     // ── FORGOT PASSWORD ─────────────────────────────────
     public function showForgotPassword()

@@ -12,7 +12,13 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'admin'      => \App\Http\Middleware\AdminMiddleware::class,
+            'superadmin' => \App\Http\Middleware\SuperAdminMiddleware::class,
+            'checkbanned' => \App\Http\Middleware\CheckBanned::class,
+        ]);
+        // Apply to all web routes
+        $middleware->web(append: [
+            \App\Http\Middleware\CheckBanned::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
