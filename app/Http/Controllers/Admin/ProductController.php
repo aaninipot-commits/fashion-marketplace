@@ -27,7 +27,7 @@ class ProductController extends Controller
             'name'        => 'required|string|max:191',
             'description' => 'nullable|string',
             'price'       => 'required|numeric|min:0',
-            'size'        => 'nullable|string|max:191',
+            'sizes'       => 'nullable|array',
             'color'       => 'nullable|string|max:191',
             'stock'       => 'required|integer|min:0',
             'status'      => 'required|in:available,unavailable',
@@ -42,13 +42,16 @@ class ProductController extends Controller
             $imagePath = 'products/' . $filename;
         }
 
+        // Convert sizes array to comma-separated string
+        $sizes = $request->sizes ? implode(',', $request->sizes) : null;
+
         Product::create([
             'seller_id'   => Auth::id(),
             'category_id' => $request->category_id,
             'name'        => $request->name,
             'description' => $request->description,
             'price'       => $request->price,
-            'size'        => $request->size,
+            'size'        => $sizes,
             'color'       => $request->color,
             'stock'       => $request->stock,
             'status'      => $request->status,
@@ -64,6 +67,8 @@ class ProductController extends Controller
             return response()->json(['error' => 'Unauthorized.'], 403);
         }
         $product->load('category');
+        // Convert sizes string to array for the response
+        $product->sizes_array = $product->size ? explode(',', $product->size) : [];
         return response()->json($product);
     }
 
@@ -78,7 +83,7 @@ class ProductController extends Controller
             'name'        => 'required|string|max:191',
             'description' => 'nullable|string',
             'price'       => 'required|numeric|min:0',
-            'size'        => 'nullable|string|max:191',
+            'sizes'       => 'nullable|array',
             'color'       => 'nullable|string|max:191',
             'stock'       => 'required|integer|min:0',
             'status'      => 'required|in:available,unavailable',
@@ -87,7 +92,6 @@ class ProductController extends Controller
 
         $imagePath = $product->image;
         if ($request->hasFile('image')) {
-            // Delete old image
             if ($product->image && file_exists(public_path($product->image))) {
                 unlink(public_path($product->image));
             }
@@ -97,12 +101,15 @@ class ProductController extends Controller
             $imagePath = 'products/' . $filename;
         }
 
+        // Convert sizes array to comma-separated string
+        $sizes = $request->sizes ? implode(',', $request->sizes) : null;
+
         $product->update([
             'category_id' => $request->category_id,
             'name'        => $request->name,
             'description' => $request->description,
             'price'       => $request->price,
-            'size'        => $request->size,
+            'size'        => $sizes,
             'color'       => $request->color,
             'stock'       => $request->stock,
             'status'      => $request->status,

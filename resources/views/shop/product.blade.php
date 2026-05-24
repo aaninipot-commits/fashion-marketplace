@@ -92,10 +92,17 @@
                         @endif
                         <div style="display:flex; flex-wrap:wrap; gap:15px;">
                             @if($product->size)
-                                <div style="font-size:13px; color:#444;">
-                                    <strong>Size:</strong> {{ $product->size }}
-                                </div>
-                            @endif
+    <div style="font-size:13px; color:#444; margin-bottom:10px;">
+        <strong style="display:block; margin-bottom:8px; font-size:11px; letter-spacing:1px; text-transform:uppercase;">Available Sizes:</strong>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            @foreach(explode(',', $product->size) as $size)
+                <span style="border:1px solid #111; padding:6px 14px; font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; background:#fff; color:#111;">
+                    {{ trim($size) }}
+                </span>
+            @endforeach
+        </div>
+    </div>
+@endif
                             @if($product->color)
                                 <div style="font-size:13px; color:#444;">
                                     <strong>Color:</strong> {{ $product->color }}

@@ -26,6 +26,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Google Auth
 Route::get('/auth/google', [App\Http\Controllers\AuthController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [App\Http\Controllers\AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+Route::get('/google/role', [App\Http\Controllers\AuthController::class, 'showGoogleRole'])->name('google.role');
+Route::post('/google/role', [App\Http\Controllers\AuthController::class, 'saveGoogleRole'])->name('google.role.save');
 
 // Forgot Password
 Route::get('/forgot-password', [App\Http\Controllers\AuthController::class, 'showForgotPassword'])->name('password.request');
@@ -40,6 +42,7 @@ Route::middleware('auth')->group(function () {
     // User Profile
     Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
     Route::post('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/upgrade', [App\Http\Controllers\ProfileController::class, 'upgrade'])->name('profile.upgrade');
 
     // Product Inquiry
     Route::post('/inquiry', [App\Http\Controllers\InquiryController::class, 'send'])->name('inquiry.send');

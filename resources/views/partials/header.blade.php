@@ -12,44 +12,46 @@
                     <div class="header__top__right">
                         <div class="header__top__links">
                             @auth
-                                <div style="display:flex; align-items:center; gap:15px;">
-                                    <!-- User Icon & Name -->
-                                    <div style="display:flex; align-items:center; gap:8px;">
-                                        <div style="width:28px; height:28px; background:#c8a96e; border-radius:50%; display:flex; align-items:center; justify-content:center;">
-                                            <i class="fa fa-user" style="font-size:12px; color:#111;"></i>
-                                        </div>
-                                        <span style="color:#fff; font-size:13px; font-weight:600; letter-spacing:0.5px;">
-                                            {{ Auth::user()->name }}
-                                        </span>
+                            <div style="display:flex; align-items:center; gap:15px;">
+                                <!-- Clickable Name → goes to profile -->
+                                <a href="{{ route('profile.index') }}"
+                                    style="display:flex; align-items:center; gap:8px; text-decoration:none; transition:opacity 0.3s;"
+                                    onmouseover="this.style.opacity='0.8';" onmouseout="this.style.opacity='1';">
+                                    <div style="width:28px; height:28px; background:#c8a96e; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                                        <i class="fa fa-user" style="font-size:12px; color:#111;"></i>
                                     </div>
-
-                                    <!-- Divider -->
-                                    <span style="color:rgba(255,255,255,0.3);">|</span>
-
-                                    <!-- Sign Out Button -->
-                                    <form method="POST" action="{{ route('logout') }}" style="display:inline">
-                                        @csrf
-                                        <button type="submit"
-                                            style="background:rgba(200,169,110,0.2); border:1px solid #c8a96e; color:#c8a96e; cursor:pointer; padding:5px 14px; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; transition:all 0.3s;"
-                                            onmouseover="this.style.background='#c8a96e'; this.style.color='#111';"
-                                            onmouseout="this.style.background='rgba(200,169,110,0.2)'; this.style.color='#c8a96e';">
-                                            <i class="fa fa-sign-out" style="margin-right:5px;"></i> Sign Out
-                                        </button>
-                                    </form>
-                                </div>
-                            @else
-                                <a href="{{ route('login') }}" style="color:#fff; font-size:13px; font-weight:600; letter-spacing:0.5px; text-decoration:none; transition:color 0.3s;"
-                                    onmouseover="this.style.color='#c8a96e';"
-                                    onmouseout="this.style.color='#fff';">
-                                    <i class="fa fa-sign-in" style="margin-right:5px;"></i> Sign In
+                                    <span style="color:#fff; font-size:13px; font-weight:600; letter-spacing:0.5px;">
+                                        {{ Auth::user()->name }}
+                                    </span>
                                 </a>
-                                <span style="color:rgba(255,255,255,0.3); margin:0 5px;">|</span>
-                                <a href="{{ route('register') }}" style="color:#c8a96e; font-size:13px; font-weight:700; letter-spacing:0.5px; text-decoration:none; transition:color 0.3s;"
-                                    onmouseover="this.style.color='#fff';"
-                                    onmouseout="this.style.color='#c8a96e';">
-                                    <i class="fa fa-user-plus" style="margin-right:5px;"></i> Register
-                                </a>
-                            @endauth
+                        
+                                <!-- Divider -->
+                                <span style="color:rgba(255,255,255,0.3);">|</span>
+                        
+                                <!-- Sign Out -->
+                                <form method="POST" action="{{ route('logout') }}" style="display:inline">
+                                    @csrf
+                                    <button type="submit"
+                                        style="background:rgba(200,169,110,0.2); border:1px solid #c8a96e; color:#c8a96e; cursor:pointer; padding:5px 14px; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; transition:all 0.3s;"
+                                        onmouseover="this.style.background='#c8a96e'; this.style.color='#111';"
+                                        onmouseout="this.style.background='rgba(200,169,110,0.2)'; this.style.color='#c8a96e';">
+                                        <i class="fa fa-sign-out" style="margin-right:5px;"></i> Sign Out
+                                    </button>
+                                </form>
+                            </div>
+                        @else
+                            <a href="{{ route('login') }}" style="color:#fff; font-size:13px; font-weight:600; letter-spacing:0.5px; text-decoration:none; transition:color 0.3s;"
+                                onmouseover="this.style.color='#c8a96e';"
+                                onmouseout="this.style.color='#fff';">
+                                <i class="fa fa-sign-in" style="margin-right:5px;"></i> Sign In
+                            </a>
+                            <span style="color:rgba(255,255,255,0.3); margin:0 5px;">|</span>
+                            <a href="{{ route('register') }}" style="color:#c8a96e; font-size:13px; font-weight:700; letter-spacing:0.5px; text-decoration:none; transition:color 0.3s;"
+                                onmouseover="this.style.color='#fff';"
+                                onmouseout="this.style.color='#c8a96e';">
+                                <i class="fa fa-user-plus" style="margin-right:5px;"></i> Register
+                            </a>
+                        @endauth
                         </div>
                     </div>
                 </div>
@@ -108,9 +110,6 @@
                                     <span style="background:#e74c3c; color:#fff; border-radius:50px; padding:1px 7px; font-size:10px; font-weight:700; margin-left:5px;">{{ $userUnread }}</span>
                                 @endif
                             </a>
-                        </li>
-                        <li class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">
-                            <a href="{{ route('profile.index') }}">My Profile</a>
                         </li>
                     </ul>
                 </nav>

@@ -90,14 +90,12 @@ class AuthController extends Controller
     public function handleGoogleCallback()
     {
         try {
-            // Fix SSL certificate issue for WampServer
             $httpClient = new \GuzzleHttp\Client([
                 'verify' => false,
             ]);
 
             $provider = Socialite::driver('google');
 
-            // Use reflection to set the http client
             $reflectionClass = new \ReflectionClass($provider);
             $reflectionProperty = $reflectionClass->getParentClass()->getProperty('httpClient');
             $reflectionProperty->setAccessible(true);
@@ -105,32 +103,78 @@ class AuthController extends Controller
 
             $googleUser = $provider->user();
 
+            // Check if user already exists
             $user = User::where('email', $googleUser->getEmail())->first();
 
             if ($user) {
+                // Existing user - just log them in
                 Auth::login($user);
-            } else {
-                $user = User::create([
-                    'name'              => $googleUser->getName(),
-                    'email'             => $googleUser->getEmail(),
-                    'password'          => Hash::make(Str::random(24)),
-                    'role'              => 'user',
-                    'google_id'         => $googleUser->getId(),
-                    'profile_photo_url' => $googleUser->getAvatar(),
-                ]);
-                Auth::login($user);
+                if ($user->role === 'admin') {
+                    return redirect()->route('admin.dashboard');
+                }
+                return redirect()->route('home');
             }
 
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            }
-            return redirect()->route('home');
+            // New user - store Google data in session and ask for role
+            session([
+                'google_name'    => $googleUser->getName(),
+                'google_email'   => $googleUser->getEmail(),
+                'google_id'      => $googleUser->getId(),
+                'google_avatar'  => $googleUser->getAvatar(),
+            ]);
+
+            return redirect()->route('google.role');
         } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
             return redirect()->route('auth.google');
         } catch (\Exception $e) {
             return redirect()->route('login')
                 ->withErrors(['email' => 'Google login failed: ' . $e->getMessage()]);
         }
+    }
+
+    // ── GOOGLE ROLE SELECTION ───────────────────────────
+    public function showGoogleRole()
+    {
+        // If no Google session data, redirect to login
+        if (!session('google_email')) {
+            return redirect()->route('login');
+        }
+        return view('auth.google_role');
+    }
+
+    public function saveGoogleRole(Request $request)
+    {
+        $request->validate([
+            'role'             => 'required|in:user,admin',
+            'shop_name'        => 'required_if:role,admin|nullable|string|max:191',
+            'shop_description' => 'nullable|string|max:191',
+        ]);
+
+        // Check if session data exists
+        if (!session('google_email')) {
+            return redirect()->route('login');
+        }
+
+        $user = User::create([
+            'name'              => session('google_name'),
+            'email'             => session('google_email'),
+            'password'          => Hash::make(Str::random(24)),
+            'role'              => $request->role,
+            'shop_name'         => $request->shop_name,
+            'shop_description'  => $request->shop_description,
+            'google_id'         => session('google_id'),
+            'profile_photo_url' => session('google_avatar'),
+        ]);
+
+        // Clear Google session data
+        session()->forget(['google_name', 'google_email', 'google_id', 'google_avatar']);
+
+        Auth::login($user);
+
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('home');
     }
 
     // ── FORGOT PASSWORD ─────────────────────────────────

@@ -130,20 +130,21 @@
                         <label class="form-label">Stock <span style="color:#e74c3c;">*</span></label>
                         <input type="number" name="stock" class="form-control" placeholder="0" min="0" required>
                     </div>
-                    <!-- Size -->
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Size</label>
-                        <select name="size" class="form-select">
-                            <option value="">-- Select Size --</option>
-                            <option value="XS">XS</option>
-                            <option value="S">S</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="XL">XL</option>
-                            <option value="XXL">XXL</option>
-                            <option value="Free Size">Free Size</option>
-                        </select>
-                    </div>
+                    <!-- Sizes (multiple) -->
+<div class="col-md-6 mb-3">
+    <label class="form-label">Available Sizes</label>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; padding:10px; border:1px solid #e8e8e8; background:#fafafa;">
+        @foreach(['XS','S','M','L','XL','XXL','Free Size'] as $size)
+            <label style="display:flex; align-items:center; gap:5px; font-size:12px; cursor:pointer; padding:5px 10px; border:1px solid #e8e8e8; background:#fff; transition:all 0.2s;"
+                onmouseover="this.style.borderColor='#111';" onmouseout="this.style.borderColor='#e8e8e8';">
+                <input type="checkbox" name="sizes[]" value="{{ $size }}"
+                    style="accent-color:#111;">
+                {{ $size }}
+            </label>
+        @endforeach
+    </div>
+    <small style="color:#999; font-size:11px; margin-top:4px; display:block;">Select all available sizes</small>
+</div>
                     <!-- Color -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Color</label>
@@ -236,20 +237,21 @@
                         <label class="form-label">Stock <span style="color:#e74c3c;">*</span></label>
                         <input type="number" id="edit_product_stock" name="stock" class="form-control" min="0" required>
                     </div>
-                    <!-- Size -->
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Size</label>
-                        <select id="edit_product_size" name="size" class="form-select">
-                            <option value="">-- Select Size --</option>
-                            <option value="XS">XS</option>
-                            <option value="S">S</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="XL">XL</option>
-                            <option value="XXL">XXL</option>
-                            <option value="Free Size">Free Size</option>
-                        </select>
-                    </div>
+                    <!-- Sizes (multiple) -->
+<div class="col-md-6 mb-3">
+    <label class="form-label">Available Sizes</label>
+    <div id="edit_sizes_container" style="display:flex; flex-wrap:wrap; gap:8px; padding:10px; border:1px solid #e8e8e8; background:#fafafa;">
+        @foreach(['XS','S','M','L','XL','XXL','Free Size'] as $size)
+            <label style="display:flex; align-items:center; gap:5px; font-size:12px; cursor:pointer; padding:5px 10px; border:1px solid #e8e8e8; background:#fff; transition:all 0.2s;"
+                onmouseover="this.style.borderColor='#111';" onmouseout="this.style.borderColor='#e8e8e8';">
+                <input type="checkbox" name="sizes[]" value="{{ $size }}" class="edit-size-checkbox"
+                    style="accent-color:#111;">
+                {{ $size }}
+            </label>
+        @endforeach
+    </div>
+    <small style="color:#999; font-size:11px; margin-top:4px; display:block;">Select all available sizes</small>
+</div>
                     <!-- Color -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Color</label>
@@ -402,33 +404,42 @@
 
     // ── EDIT PRODUCT - Load Data ────────────────────────
     function editProduct(id) {
-        $.get('/admin/products/' + id, function(data) {
-            $('#edit_product_id').val(data.id);
-            $('#edit_product_name').val(data.name);
-            $('#edit_product_category').val(data.category_id);
-            $('#edit_product_price').val(data.price);
-            $('#edit_product_stock').val(data.stock);
-            $('#edit_product_size').val(data.size);
-            $('#edit_product_color').val(data.color);
-            $('#edit_product_status').val(data.status);
-            $('#edit_product_description').val(data.description);
+    $.get('/admin/products/' + id, function(data) {
+        $('#edit_product_id').val(data.id);
+        $('#edit_product_name').val(data.name);
+        $('#edit_product_category').val(data.category_id);
+        $('#edit_product_price').val(data.price);
+        $('#edit_product_stock').val(data.stock);
+        $('#edit_product_color').val(data.color);
+        $('#edit_product_status').val(data.status);
+        $('#edit_product_description').val(data.description);
 
-            // Show current image preview
-            if (data.image) {
-                $('#current_image_preview').html(
-    '<img src="/' + data.image + '" style="width:60px; height:60px; object-fit:cover; border:1px solid #f0f0f0; margin-bottom:5px;" alt="Current Image">' +
-                    '<br><small style="color:#999; font-size:11px;">Current image</small>'
-                );
-            } else {
-                $('#current_image_preview').html('<small style="color:#999; font-size:11px;">No current image</small>');
-            }
+        // Uncheck all sizes first
+        $('.edit-size-checkbox').prop('checked', false);
 
-            $('.edit-product-error').hide();
-            $('#editProductModal').css('display', 'flex');
-        }).fail(function() {
-            showError('Failed to load product data. Please try again.');
-        });
-    }
+        // Check the sizes that the product has
+        if (data.sizes_array && data.sizes_array.length > 0) {
+            data.sizes_array.forEach(function(size) {
+                $('.edit-size-checkbox[value="' + size.trim() + '"]').prop('checked', true);
+            });
+        }
+
+        // Show current image preview
+        if (data.image) {
+            $('#current_image_preview').html(
+                '<img src="/' + data.image + '" style="width:60px; height:60px; object-fit:cover; border:1px solid #f0f0f0; margin-bottom:5px;" alt="Current Image">' +
+                '<br><small style="color:#999; font-size:11px;">Current image</small>'
+            );
+        } else {
+            $('#current_image_preview').html('<small style="color:#999; font-size:11px;">No current image</small>');
+        }
+
+        $('.edit-product-error').hide();
+        $('#editProductModal').css('display', 'flex');
+    }).fail(function() {
+        showError('Failed to load product data. Please try again.');
+    });
+}
 
     // ── UPDATE PRODUCT ──────────────────────────────────
     $('#editProductForm').submit(function(e) {
